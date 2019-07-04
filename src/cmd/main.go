@@ -17,6 +17,8 @@ func main() {
 	showTODOList(srv)
 
 	showTaskList(srv)
+
+	updateTODO(srv, "hogehgo", "aaaaa")
 }
 
 func showTODOList(srv *tasks.Service) {
@@ -46,6 +48,21 @@ func showTaskList(srv *tasks.Service) {
 	}
 }
 
+func createTODO(srv *tasks.Service, title string) {
+	todo := src.NewTODOOperation(srv.Tasklists).Create(title)
+	fmt.Printf("create TODO: %s\n", todo.Title)
+}
+
+func updateTODO(srv *tasks.Service, targetTitle, updatedTitle string) {
+	todo := src.NewTODOOperation(srv.Tasklists).UpdateTitleByTODOID(targetTitle, updatedTitle)
+	fmt.Printf("update TODO: %s", todo.Title)
+}
+
+func deleteTODO(srv *tasks.Service, title string) {
+	src.NewTODOOperation(srv.Tasklists).DeleteByTODOID(title)
+	fmt.Printf("delete TODO: %s", title)
+}
+
 func getService() *tasks.Service {
 	b, err := ioutil.ReadFile("credentials.json")
 	if err != nil {
@@ -53,7 +70,7 @@ func getService() *tasks.Service {
 	}
 
 	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, tasks.TasksReadonlyScope)
+	config, err := google.ConfigFromJSON(b, tasks.TasksScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}

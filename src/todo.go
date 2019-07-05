@@ -20,15 +20,15 @@ type TODOOperator interface {
 }
 
 type TODOOperation struct {
-	srv *tasks.TasklistsService
+	wrap TODOOpWrapper
 }
 
-func NewTODOOperation(service *tasks.TasklistsService) TODOOperator {
-	return &TODOOperation{srv: service}
+func NewTODOOperation(wrap TODOOpWrapper) TODOOperator {
+	return &TODOOperation{wrap: wrap}
 }
 
 func (op *TODOOperation) List() []*tasks.TaskList {
-	r, err := op.srv.List().MaxResults(maxCount).Do()
+	r, err := op.wrap.List(maxCount).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve task lists. %v", err)
 	}
@@ -62,7 +62,7 @@ func (op *TODOOperation) FindByTitle(title string) *tasks.TaskList {
 }
 
 func (op *TODOOperation) Create(title string) *tasks.TaskList {
-	tl, err := op.srv.Insert(&tasks.TaskList{Title: title}).Do()
+	tl, err := op.wrap.Insert(&tasks.TaskList{Title: title}).Do()
 	if err != nil {
 		log.Fatalf("Unable to create todo. %v", err)
 	}
@@ -73,7 +73,7 @@ func (op *TODOOperation) Create(title string) *tasks.TaskList {
 func (op *TODOOperation) DeleteByTODOID(title string) {
 	todo := op.FindByTitle(title)
 
-	if err := op.srv.Delete(todo.Id).Do(); err != nil {
+	if err := op.wrap.Delete(todo.Id).Do(); err != nil {
 		log.Fatalf("Unable to delete todo. %v", err)
 	}
 }
@@ -84,7 +84,7 @@ func (op *TODOOperation) UpdateTitleByTODOID(prevTitle, nextTitle string) *tasks
 		log.Fatal("No TODO exists")
 	}
 
-	tl, err := op.srv.Update(prevTODO.Id, &tasks.TaskList{Id: prevTODO.Id, Title: nextTitle}).Do()
+	tl, err := op.wrap.Update(prevTODO.Id, &tasks.TaskList{Id: prevTODO.Id, Title: nextTitle}).Do()
 	if err != nil {
 		log.Fatalf("Unable to update todo. %v", err)
 	}

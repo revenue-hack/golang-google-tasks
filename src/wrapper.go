@@ -1,6 +1,7 @@
+// mockgen
 package src
 
-import "google.golang.org/api/tasks/v1"
+import tasks "google.golang.org/api/tasks/v1"
 
 type TODOOpWrap struct {
 	srv *tasks.TasklistsService

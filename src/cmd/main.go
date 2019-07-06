@@ -22,7 +22,10 @@ func main() {
 }
 
 func showTODOList(srv *tasks.Service) {
-	list := src.NewTODOOperation(srv.Tasklists).List()
+	list, err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).List()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println("TODO Lists:")
 	if len(list) > 0 {
@@ -35,8 +38,14 @@ func showTODOList(srv *tasks.Service) {
 }
 
 func showTaskList(srv *tasks.Service) {
-	todo := src.NewTODOOperation(srv.Tasklists).First()
-	list := src.NewTaskOperation(srv.Tasks).ListByTODOID(todo.Id)
+	todo, err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).First()
+	if err != nil {
+		log.Fatal(err)
+	}
+	list, err := src.NewTaskOperation(src.NewTaskOpWrap(srv.Tasks)).ListByTODOID(todo.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println("Task Lists:")
 	if len(list) > 0 {
@@ -49,17 +58,25 @@ func showTaskList(srv *tasks.Service) {
 }
 
 func createTODO(srv *tasks.Service, title string) {
-	todo := src.NewTODOOperation(srv.Tasklists).Create(title)
+	todo, err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).Create(title)
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("create TODO: %s\n", todo.Title)
 }
 
 func updateTODO(srv *tasks.Service, targetTitle, updatedTitle string) {
-	todo := src.NewTODOOperation(srv.Tasklists).UpdateTitleByTODOID(targetTitle, updatedTitle)
+	todo, err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).UpdateTitleByTODOID(targetTitle, updatedTitle)
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("update TODO: %s", todo.Title)
 }
 
 func deleteTODO(srv *tasks.Service, title string) {
-	src.NewTODOOperation(srv.Tasklists).DeleteByTODOID(title)
+	if err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).DeleteByTODOID(title); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("delete TODO: %s", title)
 }
 

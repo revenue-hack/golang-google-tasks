@@ -1,7 +1,7 @@
 package src
 
 import (
-	"log"
+	"golang.org/x/xerrors"
 
 	"google.golang.org/api/tasks/v1"
 )
@@ -24,11 +24,10 @@ func NewTask(todoID, title, notes, due string) *Task {
 }
 
 type TaskOperator interface {
-	ListByTODOID(id string) []*tasks.Task
-	CreateByTODOID(task *Task) *tasks.Task
-	FindByTitle(id, title string) *tasks.Task
-	UpdateByTODOID(task *Task) *tasks.Task
-	DeleteByTitle(todoID, title string)
+	ListByTODOID(id string) ([]*tasks.Task, error)
+	CreateByTODOID(task *Task) (*tasks.Task, error)
+	UpdateByTODOID(task *Task) (*tasks.Task, error)
+	DeleteByTitle(todoID, title string) error
 }
 
 type TaskOperation struct {
@@ -39,54 +38,65 @@ func NewTaskOperation(op TaskOpWrapper) TaskOperator {
 	return &TaskOperation{wrap: op}
 }
 
-func (op *TaskOperation) ListByTODOID(id string) []*tasks.Task {
-	task, err := op.wrap.List(id).Do()
+func (op *TaskOperation) ListByTODOID(id string) ([]*tasks.Task, error) {
+	task, err := op.wrap.List(id)
 	if err != nil {
-		log.Fatalf("Unable to retrieve task lists. %v", err)
+		return nil, xerrors.Errorf("Unable to retrieve task lists. %v", err)
 	}
 
-	return task.Items
+	return task.Items, nil
 }
 
-func (op *TaskOperation) CreateByTODOID(task *Task) *tasks.Task {
-	t, err := op.wrap.Insert(task.todoID, &tasks.Task{Title: task.title, Notes: task.notes, Due: task.due}).Do()
+func (op *TaskOperation) CreateByTODOID(task *Task) (*tasks.Task, error) {
+	t, err := op.wrap.Insert(task.todoID, &tasks.Task{Title: task.title, Notes: task.notes, Due: task.due})
 	if err != nil {
-		log.Fatalf("Unable to create task. %v", err)
+		return nil, xerrors.Errorf("Unable to create task. %v", err)
 	}
 
-	return t
+	return t, nil
 }
 
-func (op *TaskOperation) FindByTitle(id, title string) *tasks.Task {
-	list := op.ListByTODOID(id)
+func (op *TaskOperation) findByTitle(id, title string) (*tasks.Task, error) {
+	list, err := op.ListByTODOID(id)
+	if err != nil {
+		return nil, xerrors.Errorf("Unable to find task, %v", err)
+	}
 
 	if len(list) > 0 {
 		for _, l := range list {
 			if l.Title == title {
-				return l
+				return l, nil
 			}
-			return nil
+			return nil, nil
 		}
 	}
 
-	return nil
+	return nil, nil
 }
 
-func (op *TaskOperation) UpdateByTODOID(task *Task) *tasks.Task {
-	prevTask := op.FindByTitle(task.todoID, task.title)
+func (op *TaskOperation) UpdateByTODOID(task *Task) (*tasks.Task, error) {
+	prevTask, err := op.findByTitle(task.todoID, task.title)
+	if err != nil {
+		return nil, err
+	}
 
 	t, err := op.wrap.Update(task.todoID, prevTask.Id,
-		&tasks.Task{Id: prevTask.Id, Title: task.title, Due: task.due, Notes: task.notes}).Do()
+		&tasks.Task{Id: prevTask.Id, Title: task.title, Due: task.due, Notes: task.notes})
 	if err != nil {
-		log.Fatalf("Unable to update task. %v", err)
+		return nil, xerrors.Errorf("Unable to update task. %v", err)
 	}
 
-	return t
+	return t, nil
 }
 
-func (op *TaskOperation) DeleteByTitle(todoID, title string) {
-	task := op.FindByTitle(todoID, title)
-	if err := op.wrap.Delete(todoID, task.Id).Do(); err != nil {
-		log.Fatalf("Unable to delete task. %v", err)
+func (op *TaskOperation) DeleteByTitle(todoID, title string) error {
+	task, err := op.findByTitle(todoID, title)
+	if err != nil {
+		return err
 	}
+
+	if err := op.wrap.Delete(todoID, task.Id); err != nil {
+		return xerrors.Errorf("Unable to delete task. %v", err)
+	}
+	return nil
 }

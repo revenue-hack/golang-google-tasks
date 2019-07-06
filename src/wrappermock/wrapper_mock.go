@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	googleapi "google.golang.org/api/googleapi"
 	v1 "google.golang.org/api/tasks/v1"
 )
 
@@ -35,59 +36,82 @@ func (m *MockTODOOpWrapper) EXPECT() *MockTODOOpWrapperMockRecorder {
 }
 
 // List mocks base method
-func (m *MockTODOOpWrapper) List(maxCount int64) *v1.TasklistsListCall {
+func (m *MockTODOOpWrapper) List(maxCount int64, opts ...googleapi.CallOption) (*v1.TaskLists, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", maxCount)
-	ret0, _ := ret[0].(*v1.TasklistsListCall)
-	return ret0
+	varargs := []interface{}{maxCount}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(*v1.TaskLists)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // List indicates an expected call of List
-func (mr *MockTODOOpWrapperMockRecorder) List(maxCount interface{}) *gomock.Call {
+func (mr *MockTODOOpWrapperMockRecorder) List(maxCount interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTODOOpWrapper)(nil).List), maxCount)
+	varargs := append([]interface{}{maxCount}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTODOOpWrapper)(nil).List), varargs...)
 }
 
 // Insert mocks base method
-func (m *MockTODOOpWrapper) Insert(tasklist *v1.TaskList) *v1.TasklistsInsertCall {
+func (m *MockTODOOpWrapper) Insert(tasklist *v1.TaskList, opts ...googleapi.CallOption) (*v1.TaskList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", tasklist)
-	ret0, _ := ret[0].(*v1.TasklistsInsertCall)
-	return ret0
+	varargs := []interface{}{tasklist}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(*v1.TaskList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert
-func (mr *MockTODOOpWrapperMockRecorder) Insert(tasklist interface{}) *gomock.Call {
+func (mr *MockTODOOpWrapperMockRecorder) Insert(tasklist interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTODOOpWrapper)(nil).Insert), tasklist)
+	varargs := append([]interface{}{tasklist}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTODOOpWrapper)(nil).Insert), varargs...)
 }
 
 // Update mocks base method
-func (m *MockTODOOpWrapper) Update(tasklistid string, tasklist *v1.TaskList) *v1.TasklistsUpdateCall {
+func (m *MockTODOOpWrapper) Update(tasklistid string, tasklist *v1.TaskList, opts ...googleapi.CallOption) (*v1.TaskList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", tasklistid, tasklist)
-	ret0, _ := ret[0].(*v1.TasklistsUpdateCall)
-	return ret0
+	varargs := []interface{}{tasklistid, tasklist}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Update", varargs...)
+	ret0, _ := ret[0].(*v1.TaskList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update
-func (mr *MockTODOOpWrapperMockRecorder) Update(tasklistid, tasklist interface{}) *gomock.Call {
+func (mr *MockTODOOpWrapperMockRecorder) Update(tasklistid, tasklist interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTODOOpWrapper)(nil).Update), tasklistid, tasklist)
+	varargs := append([]interface{}{tasklistid, tasklist}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTODOOpWrapper)(nil).Update), varargs...)
 }
 
 // Delete mocks base method
-func (m *MockTODOOpWrapper) Delete(tasklistid string) *v1.TasklistsDeleteCall {
+func (m *MockTODOOpWrapper) Delete(tasklistid string, opts ...googleapi.CallOption) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", tasklistid)
-	ret0, _ := ret[0].(*v1.TasklistsDeleteCall)
+	varargs := []interface{}{tasklistid}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Delete", varargs...)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockTODOOpWrapperMockRecorder) Delete(tasklistid interface{}) *gomock.Call {
+func (mr *MockTODOOpWrapperMockRecorder) Delete(tasklistid interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTODOOpWrapper)(nil).Delete), tasklistid)
+	varargs := append([]interface{}{tasklistid}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTODOOpWrapper)(nil).Delete), varargs...)
 }
 
 // MockTaskOpWrapper is a mock of TaskOpWrapper interface
@@ -114,57 +138,80 @@ func (m *MockTaskOpWrapper) EXPECT() *MockTaskOpWrapperMockRecorder {
 }
 
 // List mocks base method
-func (m *MockTaskOpWrapper) List(tasklistid string) *v1.TasksListCall {
+func (m *MockTaskOpWrapper) List(tasklistid string, opts ...googleapi.CallOption) (*v1.Tasks, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", tasklistid)
-	ret0, _ := ret[0].(*v1.TasksListCall)
-	return ret0
+	varargs := []interface{}{tasklistid}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(*v1.Tasks)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // List indicates an expected call of List
-func (mr *MockTaskOpWrapperMockRecorder) List(tasklistid interface{}) *gomock.Call {
+func (mr *MockTaskOpWrapperMockRecorder) List(tasklistid interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTaskOpWrapper)(nil).List), tasklistid)
+	varargs := append([]interface{}{tasklistid}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTaskOpWrapper)(nil).List), varargs...)
 }
 
 // Insert mocks base method
-func (m *MockTaskOpWrapper) Insert(tasklistid string, task *v1.Task) *v1.TasksInsertCall {
+func (m *MockTaskOpWrapper) Insert(tasklistid string, task *v1.Task, opts ...googleapi.CallOption) (*v1.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", tasklistid, task)
-	ret0, _ := ret[0].(*v1.TasksInsertCall)
-	return ret0
+	varargs := []interface{}{tasklistid, task}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(*v1.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert
-func (mr *MockTaskOpWrapperMockRecorder) Insert(tasklistid, task interface{}) *gomock.Call {
+func (mr *MockTaskOpWrapperMockRecorder) Insert(tasklistid, task interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTaskOpWrapper)(nil).Insert), tasklistid, task)
+	varargs := append([]interface{}{tasklistid, task}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTaskOpWrapper)(nil).Insert), varargs...)
 }
 
 // Update mocks base method
-func (m *MockTaskOpWrapper) Update(tasklistid, taskid string, task *v1.Task) *v1.TasksUpdateCall {
+func (m *MockTaskOpWrapper) Update(tasklistid, taskid string, task *v1.Task, opts ...googleapi.CallOption) (*v1.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", tasklistid, taskid, task)
-	ret0, _ := ret[0].(*v1.TasksUpdateCall)
-	return ret0
+	varargs := []interface{}{tasklistid, taskid, task}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Update", varargs...)
+	ret0, _ := ret[0].(*v1.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update
-func (mr *MockTaskOpWrapperMockRecorder) Update(tasklistid, taskid, task interface{}) *gomock.Call {
+func (mr *MockTaskOpWrapperMockRecorder) Update(tasklistid, taskid, task interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTaskOpWrapper)(nil).Update), tasklistid, taskid, task)
+	varargs := append([]interface{}{tasklistid, taskid, task}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTaskOpWrapper)(nil).Update), varargs...)
 }
 
 // Delete mocks base method
-func (m *MockTaskOpWrapper) Delete(tasklistid, taskid string) *v1.TasksDeleteCall {
+func (m *MockTaskOpWrapper) Delete(tasklistid, taskid string, opts ...googleapi.CallOption) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", tasklistid, taskid)
-	ret0, _ := ret[0].(*v1.TasksDeleteCall)
+	varargs := []interface{}{tasklistid, taskid}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Delete", varargs...)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockTaskOpWrapperMockRecorder) Delete(tasklistid, taskid interface{}) *gomock.Call {
+func (mr *MockTaskOpWrapperMockRecorder) Delete(tasklistid, taskid interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTaskOpWrapper)(nil).Delete), tasklistid, taskid)
+	varargs := append([]interface{}{tasklistid, taskid}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTaskOpWrapper)(nil).Delete), varargs...)
 }

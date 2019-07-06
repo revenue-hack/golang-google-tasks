@@ -74,7 +74,7 @@ func updateTODO(srv *tasks.Service, targetTitle, updatedTitle string) {
 }
 
 func deleteTODO(srv *tasks.Service, title string) {
-	if err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).DeleteByTODOID(title); err != nil {
+	if err := src.NewTODOOperation(src.NewTODOOOpWrap(srv.Tasklists)).DeleteByTitle(title); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("delete TODO: %s", title)

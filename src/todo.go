@@ -13,9 +13,8 @@ type TODOOperator interface {
 	List() ([]*tasks.TaskList, error)
 	First() (*tasks.TaskList, error)
 	Create(title string) (*tasks.TaskList, error)
-	DeleteByTODOID(title string) error
+	DeleteByTitle(title string) error
 	UpdateTitleByTODOID(prevTitle, nextTitle string) (*tasks.TaskList, error)
-	FindByTitle(title string) (*tasks.TaskList, error)
 }
 
 type TODOOperation struct {
@@ -47,7 +46,7 @@ func (op *TODOOperation) First() (*tasks.TaskList, error) {
 	return nil, nil
 }
 
-func (op *TODOOperation) FindByTitle(title string) (*tasks.TaskList, error) {
+func (op *TODOOperation) findByTitle(title string) (*tasks.TaskList, error) {
 	list, err := op.List()
 	if err != nil {
 		return nil, xerrors.Errorf("Unable to first todo, %v", err)
@@ -74,8 +73,8 @@ func (op *TODOOperation) Create(title string) (*tasks.TaskList, error) {
 	return tl, nil
 }
 
-func (op *TODOOperation) DeleteByTODOID(title string) error {
-	todo, err := op.FindByTitle(title)
+func (op *TODOOperation) DeleteByTitle(title string) error {
+	todo, err := op.findByTitle(title)
 	if err != nil {
 		return err
 	}
@@ -87,7 +86,7 @@ func (op *TODOOperation) DeleteByTODOID(title string) error {
 }
 
 func (op *TODOOperation) UpdateTitleByTODOID(prevTitle, nextTitle string) (*tasks.TaskList, error) {
-	prevTODO, err := op.FindByTitle(prevTitle)
+	prevTODO, err := op.findByTitle(prevTitle)
 	if err != nil {
 		return nil, err
 	}
